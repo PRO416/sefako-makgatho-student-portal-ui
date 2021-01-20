@@ -1,0 +1,263 @@
+.App {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar, .footer {
+  height: 15vh;
+  width: 100vw;
+  background: rgb(12, 25, 136);
+}
+
+.navbar {
+  background: linear-gradient(to right, #fff 55%, rgb(255, 94, 1), rgb(255, 94, 1));
+  display: flex;
+  justify-content: space-between;
+
+  .logo {
+    height: 100%;
+
+    img {
+      height: inherit;
+    }
+  }
+
+  .nav-links {
+    height: 100%;
+    width: 40%;
+    text-transform: uppercase;
+    list-style: none;
+    display: flex;
+    justify-content: space-evenly;
+    margin-right: 2vw;
+
+    li:nth-of-type(1) {
+      &::before {
+        content: "";
+        position: absolute;
+        height: 3px;
+        width: 100%;
+        background: white;
+        bottom: 0;
+        transition: all 0.3s ease;
+        transform: translateX(-150%);
+      }
+    }
+
+    li:nth-of-type(2) {
+      div::before {
+        transform: translateX(-250%);
+      }
+    }
+
+    li:nth-of-type(3) {
+      div::before {
+        transform: translateX(-350%);
+      }
+    }
+
+    li:nth-of-type(4) {
+      div::before {
+        transform: translateX(-450%);
+      }
+    }
+
+    li {
+      flex: 1;
+      display: grid;
+      place-items: center;
+      font-size: 1.5rem;
+      font-weight: 500;
+      position: relative;
+      transition: font-size 0.3s ease;
+
+      div {
+        width: 100%;
+        display: grid;
+        place-items: center;
+
+        &::before {
+          content: "";
+          position: absolute;
+          height: 3px;
+          width: 100%;
+          background: white;
+          bottom: 0;
+          transition: all 0.3s ease;
+        }
+      }
+
+      ul {
+        width: 100%;
+        height: auto;
+        position: absolute;
+        top: 100%;
+        transform: scale(0);
+        transform-origin: top;
+        transition: all 0.3s ease;
+        border-right: 0.2rem solid #fff;
+        border-left: 0.2rem solid #fff; 
+
+        li {
+          height: 5vh;
+          width: 100%;
+        }
+      }
+
+      &:hover {
+        color: rgb(12, 25, 136);
+        font-size: 1.8rem;
+        font-weight: 700;
+        
+        ul {
+          transform: scale(1);
+        }
+
+        div::before {
+          transform: translateX(0);
+        }
+      }
+    }
+
+    li.active::before {
+      transform: translateX(0);
+    }
+
+    li.activeX {
+      div::before {
+        transform: translateX(0);
+      }
+    }
+  }
+}
+
+.container, .finances, .residence, .academics {
+  min-height: 70vh;
+  width: 100vw;
+  background: rgb(255, 94, 1);
+  padding-top: 5vh;
+}
+
+.container {
+  display: grid;
+  place-items: center;
+
+  .id-card {
+    height: 85%;
+    width: 80%;
+    border: 1px solid black;
+    padding: 3rem;
+    display: flex;
+    align-items: center;
+    position: relative;
+    
+
+    img {
+      border: 1px solid black;
+      background: rgba(255, 255, 255, 0.5);
+      height: 30rem;
+      margin-left: 1rem;
+      margin-right: 3rem;
+    }
+
+    .details {
+      position: absolute;
+      top: 5rem;
+      left: 40%;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      text-transform: uppercase;
+      justify-content: flex-start;
+      font-size: 2rem;
+      align-items: flex-start;
+      line-height: 5rem;
+    }
+  }
+}
+
+.academics {
+  display: grid;
+  place-items: center;
+  height: auto;
+
+
+  .academic-details {
+    min-height: 65%;
+    width: 90%;
+    border: 1px solid black;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5vh;
+
+    & > * {
+
+      button {
+        margin-bottom: 2vh;
+        border: none;
+        outline: none;
+        padding: 1.5rem 2rem;
+        background: rgb(50, 50, 58);
+        color: white;
+        text-transform: uppercase;
+
+        h3 {
+
+        }
+      }
+
+      .enrolment-details {
+        width: 100%;
+        min-height: 20vh;
+        border: 1px solid black;
+        margin-bottom: 2vh;
+        transition: all 0.3s ease;
+        background: white;
+        padding: 3rem;
+      }
+    }
+  }
+}
+
+.finances {
+  display: grid;
+  place-items: center;
+
+  form {
+    display: flex;
+    flex-direction: column;
+
+    & > * {
+      outline: none;
+      border: none;
+      text-transform: uppercase;
+    }
+
+    select {
+      height: 6vh;
+      width: 30vw;
+      padding-left: 1vw;
+      margin-bottom: 2vh;
+
+      // option {
+      //   color: red;
+      // }
+    }
+
+    button {
+      height: 6vh;
+      width: 9vw;
+      background: rgb(50, 50, 58);
+      color: white;
+    }
+  }
+}
+
+// .footer {
+  
+// }

@@ -1,0 +1,19 @@
+input {
+  outline: none;
+  border: none;
+  padding-left: 1rem;
+}
+
+.submit-button {
+  border: none;
+  background: rgb(12, 25, 136);
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 1.2rem;
+  outline: none;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background:rgb(5, 74, 131);
+  }
+}
