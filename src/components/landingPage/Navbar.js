@@ -44,13 +44,13 @@ function Navbar(props) {
           <li onClick={props.headToRes} className="activeX">
             <div>Residence</div>
             <ul>
-              <li></li>
+              
             </ul>
           </li> :
           <li onClick={props.headToRes}>
-            <div>Residence</div>
+            <div>Logout</div>
             <ul>
-              <li></li>
+              
             </ul>
           </li>
         }

@@ -45,3 +45,10 @@ export const getSchoolCourses = schoolId => {
     url: `${SMU_REST_API}/schools/${schoolId}/courses/`,
   });
 }
+
+export const getStudentModules = (studentId, courseId) => {
+  return axios({
+    method: 'get',
+    url: `${SMU_REST_API}/students/${studentId}/courses/${courseId}/modules`,
+  });
+}

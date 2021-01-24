@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-expressions */
+
 import React, { useEffect, useState } from 'react';
 import Navbar from './Navbar';
 import Footer from './Footer';
@@ -9,9 +11,13 @@ function Finances(props) {
   let [submitted, setSubmitted] = useState(false);
   let [course, setCourse] = useState([]);
   let [schools, setSchools] = useState([]);
-  let [courses, setCourses] = useState([]);
-  let [selectedSchoolName, setSelectedSchoolName] = useState('');
-  let [selectedSchool, setSelectedSchool] = useState({});
+  let [schoolCourses, setSchoolCourses] = useState([]);
+  let [selectedSchool, setSelectedSchool] = useState('Health Care Sciences');
+  let [selectedCourses, setSelectedCourses] = useState([]);
+  let [selectedCourse, setSelectedCourse] = useState('');
+  let [oneCourse, setOneCourse] = useState([]);
+
+  let schoolArray = []
 
   const { studentData } = props;
 
@@ -26,32 +32,41 @@ function Finances(props) {
   }, []);
 
   useEffect(() => {
-    getSchoolCourses(selectedSchool.id)
-      .then(res => res.data)
-      .then(data => setCourses(data))
-  }, [selectedSchool])
+    schools ? schools.map(school => {
+      getSchoolCourses(school.id)
+        .then(res => res.data)
+        .then(data => schoolArray.push(data))
+    }) : ''
+
+    setSchoolCourses(schoolArray)
+  }, [schools])
 
   useEffect(() => {
-    console.log(selectedSchoolName)
-  }, [selectedSchoolName])
+    let s = schools ? schools.filter(school => school.name === selectedSchool) : ''
+    console.log(s)
+    let s_values = schoolCourses ? Object.values(schoolCourses)[0] : console.log('undef')
+    
+    setOneCourse(s_values);
+  
+    //console.log(s_courses)
+    // setSelectedCourses(school)
+  }, [selectedSchool])
 
-  const updateSelectedSchool = e => {
-    setSelectedSchoolName(e.value.target);
-    console.log(e.value.target);
-    // console.log("hello: " + schools.filter(school => e.value.target === school.name ? school : null));
-  }
+  console.log(schoolCourses)
 
-  // console.log(selectedSchoolName);
-  // console.log(selectedSchool);
-  // console.log(courses);
+  const handleChange = e => setSelectedSchool(e.target.value);
+
+  const handleCourseChange = e => setSelectedCourse(e.target.value);
 
   const headHome = () => history.push('/dashboard/home');
 
   const headToFinance = () => history.push('/dashboard/finances');
 
-  const headToRes = () => history.push('/dashboard/residence');
+  const headToRes = () => history.push('/');
 
   const headToSchool = () => history.push('/dashboard/academics');
+
+  const redirect = () => submitted ? headHome() : 'Warning';
 
   const submitPostGrad = e => {
     e.preventDefault();
@@ -60,8 +75,6 @@ function Finances(props) {
 
     redirect();
   }
-
-  const redirect = () => submitted ? headHome : 'Warning';
 
   return (
     <div >
@@ -74,24 +87,25 @@ function Finances(props) {
       />
       <div className="finances">
         <form method="POST">
-          <select>
           {
-            schools ? schools.map(school => (
-                <option key={school.id} value={school.name} data-name={school.id}>{school.name}</option>
-            )) : ""
-          }
-          </select>
-          {
-            selectedSchoolName ? 
-            <div>
-              {selectedSchoolName}
-            </div> : ""
+            schools ? <select value={selectedSchool} onChange={handleChange}>
+              {
+                schools.map(school => (
+                  <option key={school.id} value={school.name}>{school.name}</option>
+                ))
+              }
+            </select> : ""
           }
           {
-            selectedSchool ?
-            <div>
-              {selectedSchool.name}
-            </div> : ""
+            oneCourse ? <select onChange={handleCourseChange}>
+              {
+                oneCourse
+                  .filter(mod => mod.qualification.name === 'Honours Degree')
+                  .map(mod => (
+                    <option key={mod.id} value={mod.name}>{mod.name}</option>
+                ))
+              }
+            </select> : ''
           }
           <button type="submit" onClick={submitPostGrad}>apply</button>
         </form>

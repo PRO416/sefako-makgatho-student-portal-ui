@@ -1,12 +1,15 @@
+/* eslint-disable no-unused-expressions */
+
 import React, { useEffect, useState } from 'react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import { useHistory } from 'react-router-dom';
-import { getStudentCourse } from '../../services/loginService';
+import { getStudentCourse, getStudentModules } from '../../services/loginService';
 
 function Academics(props) {
   const history = useHistory();
   const [course, setCourse] = useState([]);
+  let [modules, setModules] = useState([]);
   let [ed, setEd] = useState(false);
   let [pr, setPr] = useState(false);
   let [er, setEr] = useState(false);
@@ -20,11 +23,17 @@ function Academics(props) {
       .then(data => setCourse(data))
   }, []);
 
+  useEffect(() => {
+    course[0] ? getStudentModules(studentData.id, course[0].id)
+      .then(res => res.data)
+      .then(data => setModules(data)) : 'dne'
+  }, [course])
+
   const headHome = () => history.push('/dashboard/home');
 
   const headToFinance = () => history.push('/dashboard/finances');
 
-  const headToRes = () => history.push('/dashboard/residence');
+  const headToRes = () => history.push('/');
 
   const headToSchool = () => history.push('/dashboard/academics');
 
@@ -53,7 +62,79 @@ function Academics(props) {
                 {
                   ed ? 
                   <div className="enrolment-details">
-                    hello
+                    {
+                      course ?
+                      course.map(c => (
+                        <table key={c.id}>
+                          <tbody>
+                            <tr>
+                              <td>SCHOOL</td>
+                              <td>{c.course.school.name}</td>
+                            </tr>
+                            <tr>
+                              <td>COURSE</td>
+                              <td>{c.course.name}</td>
+                            </tr>
+                            <tr>
+                              <td>COURSE CODE</td>
+                              <td>{c.course.code}</td>
+                            </tr>
+                            <tr>
+                              <td>CURRENT LEVEL</td>
+                              <td>{c.currentLevel}</td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <h3>MODULES</h3>
+                              </td>
+                            </tr>
+                            {
+                              modules ? modules.map(mod => (
+                                <div key={mod.id}>
+                                  <tr>
+                                    <td>
+                                      {mod.module.name}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                      CODE
+                                    </td>
+                                    <td>
+                                      {mod.module.code}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                      ACADEMIC PERIOD
+                                    </td>
+                                    <td>
+                                      {mod.module.academicPeriod}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                      YEAR
+                                    </td>
+                                    <td>
+                                      {mod.module.year}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                      COMPLETED
+                                    </td>
+                                    <td>
+                                      {mod.completed ? 'YES' : 'NO'}
+                                    </td>
+                                  </tr>
+                                </div>
+                              )) : ''
+                            }
+                          </tbody>
+                        </table>
+                      )) : ''
+                    }
                   </div> : ''
                 }
               </div>
@@ -69,7 +150,94 @@ function Academics(props) {
                 {
                   pr ? 
                   <div className="enrolment-details">
-                    hello
+                    <div>
+                      <h3>STUDENT NUMBER {studentData.studentNum}</h3>
+                      <h3>STUDENT NAME {`${studentData.user.firstname} ${studentData.user.lastname}`}</h3>
+                      <br/><hr/>
+                        <h3>YEAR: 2021</h3>
+                      <hr/>
+                    </div>
+                    {
+                      modules ? modules
+                        .filter(m => course[0].currentLevel === m.module.year)
+                        .map(mod => (
+                      <table key={mod.id}>
+                        <thead>
+                          <tr>
+                            <td>
+                              CODE: {mod.module.code}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              MODULE: {mod.module.name}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>ACADEMIC PERIOD: {mod.module.academicPeriod}</td>
+                          </tr>
+                          <tr>
+                            <td>MARK: {mod.grade}</td>
+                          </tr>
+                        </thead>
+                      </table>)) : ''
+                    }
+                    <br/><hr/>
+                        <h3>YEAR: 2020</h3>
+                    <hr/>
+                    {
+                      modules ? modules
+                        .filter(m => (course[0].currentLevel > 0 && course[0].currentLevel - 1 === m.module.year))
+                        .map(mod => (
+                      <table key={mod.id}>
+                        <thead>
+                          <tr>
+                            <td>
+                              CODE: {mod.module.code}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              MODULE: {mod.module.name}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>ACADEMIC PERIOD: {mod.module.academicPeriod}</td>
+                          </tr>
+                          <tr>
+                            <td>MARK: {mod.grade}</td>
+                          </tr>
+                        </thead>
+                      </table>)) : ''
+                    }
+                    <br/><hr/>
+                      <h3>YEAR: 2019</h3>
+                    <hr/>
+                    {
+                      modules ? modules
+                        .filter(m => (course[0].currentLevel > 0 && course[0].currentLevel - 2 === m.module.year))
+                        .map(mod => (
+                      <table key={mod.id}>
+                        <thead>
+                          <tr>
+                            <td>
+                              CODE: {mod.module.code}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              MODULE: {mod.module.name}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>ACADEMIC PERIOD: {mod.module.academicPeriod}</td>
+                          </tr>
+                          <tr>
+                            <td>MARK: {mod.grade}</td>
+                          </tr>
+                        </thead>
+                      </table>)) : ''
+                    }
                   </div> : ''
                 }
               </div>
@@ -101,7 +269,23 @@ function Academics(props) {
                 {
                   as ? 
                   <div className="enrolment-details">
-                    hello
+                    {
+                      course ?
+                        course.map(c => (
+                          <table key={c.id}>
+                            <tbody>
+                              <tr>
+                                <td>APPROVAL</td>
+                                <td>{c.approved ? 'APPROVED' : 'NOT APPROVED'}</td>
+                              </tr>
+                              <tr>
+                                <td>COMPLETED</td>
+                                <td>{c.completed ? 'COMPLETED' : 'NOT COMPLETED'}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        )) : ''
+                    }
                   </div> : ''
                 }
               </div>
