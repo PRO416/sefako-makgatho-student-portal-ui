@@ -90,45 +90,47 @@ function Academics(props) {
                             </tr>
                             {
                               modules ? modules.map(mod => (
-                                <div key={mod.id}>
-                                  <tr>
-                                    <td>
-                                      {mod.module.name}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      CODE
-                                    </td>
-                                    <td>
-                                      {mod.module.code}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      ACADEMIC PERIOD
-                                    </td>
-                                    <td>
-                                      {mod.module.academicPeriod}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      YEAR
-                                    </td>
-                                    <td>
-                                      {mod.module.year}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      COMPLETED
-                                    </td>
-                                    <td>
-                                      {mod.completed ? 'YES' : 'NO'}
-                                    </td>
-                                  </tr>
-                                </div>
+                                <table key={mod.id}>
+                                  <tbody>
+                                    <tr>
+                                      <td>
+                                        {mod.module.name}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        CODE
+                                      </td>
+                                      <td>
+                                        {mod.module.code}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        ACADEMIC PERIOD
+                                      </td>
+                                      <td>
+                                        {mod.module.academicPeriod}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        YEAR
+                                      </td>
+                                      <td>
+                                        {mod.module.year}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        COMPLETED
+                                      </td>
+                                      <td>
+                                        {mod.completed ? 'YES' : 'NO'}
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
                               )) : ''
                             }
                           </tbody>
@@ -161,8 +163,8 @@ function Academics(props) {
                       modules ? modules
                         .filter(m => course[0].currentLevel === m.module.year)
                         .map(mod => (
-                      <table key={mod.id}>
-                        <thead>
+                      <table key={mod.id} className="table">
+                        <thead className="thead-dark">
                           <tr>
                             <td>
                               CODE: {mod.module.code}
@@ -174,7 +176,7 @@ function Academics(props) {
                             </td>
                           </tr>
                           <tr>
-                            <td>ACADEMIC PERIOD: {mod.module.academicPeriod}</td>
+                            <td>ACADEMIC PERIOD: {mod.module.academicPeriod === 1 ? 'FIRST SEMESTER' : 'SECOND SEMESTER'}</td>
                           </tr>
                           <tr>
                             <td>MARK: {mod.grade}</td>
@@ -189,8 +191,8 @@ function Academics(props) {
                       modules ? modules
                         .filter(m => (course[0].currentLevel > 0 && course[0].currentLevel - 1 === m.module.year))
                         .map(mod => (
-                      <table key={mod.id}>
-                        <thead>
+                      <table key={mod.id} className="table">
+                        <thead className="thead-light">
                           <tr>
                             <td>
                               CODE: {mod.module.code}
@@ -202,7 +204,7 @@ function Academics(props) {
                             </td>
                           </tr>
                           <tr>
-                            <td>ACADEMIC PERIOD: {mod.module.academicPeriod}</td>
+                            <td>ACADEMIC PERIOD: {mod.module.academicPeriod === 1 ? 'FIRST SEMESTER' : 'SECOND SEMESTER'}</td>
                           </tr>
                           <tr>
                             <td>MARK: {mod.grade}</td>
@@ -217,8 +219,8 @@ function Academics(props) {
                       modules ? modules
                         .filter(m => (course[0].currentLevel > 0 && course[0].currentLevel - 2 === m.module.year))
                         .map(mod => (
-                      <table key={mod.id}>
-                        <thead>
+                      <table key={mod.id} className="table">
+                        <thead className="thead-light">
                           <tr>
                             <td>
                               CODE: {mod.module.code}
@@ -230,7 +232,7 @@ function Academics(props) {
                             </td>
                           </tr>
                           <tr>
-                            <td>ACADEMIC PERIOD: {mod.module.academicPeriod}</td>
+                            <td>ACADEMIC PERIOD: {mod.module.academicPeriod === 1 ? 'FIRST SEMESTER' : 'SECOND SEMESTER'}</td>
                           </tr>
                           <tr>
                             <td>MARK: {mod.grade}</td>
@@ -253,7 +255,32 @@ function Academics(props) {
                 {
                   er ? 
                   <div className="enrolment-details">
-                    hello
+                    <h3>STUDENT NUMBER {studentData.studentNum}</h3><br/>
+                    <h3>RESULTS FOR: {`${studentData.user.firstname} ${studentData.user.lastname}`}</h3><br/>
+                    <h3>QUALIFICATION: BSc (Mathematical Sciences) III</h3><br/>
+                    <table className="table">
+                      <thead className="thead-light">
+                        <tr>
+                          <td>MODULES</td>
+                          <td>PERIOD</td>
+                          <td>MARK</td>
+                        </tr>
+                      </thead>
+                      <br/>
+                    {
+                      modules ? modules
+                        .filter(m => course[0].currentLevel === m.module.year)
+                        .map(mod => (
+                        <tbody key={mod.id}>
+                          <tr>
+                            <td>{mod.module.name}</td>
+                            <td>ACADEMIC PERIOD: {mod.module.academicPeriod}</td>
+                            <td>{mod.grade}</td>
+                          </tr>
+                        </tbody>
+                      )) : ''
+                    }
+                    </table>
                   </div> : ''
                 }
               </div>

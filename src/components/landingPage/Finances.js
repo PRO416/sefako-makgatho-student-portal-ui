@@ -16,6 +16,7 @@ function Finances(props) {
   let [selectedCourses, setSelectedCourses] = useState([]);
   let [selectedCourse, setSelectedCourse] = useState('');
   let [oneCourse, setOneCourse] = useState([]);
+  let [hasSchoolBeenSelected, setHasSchoolBeenSelected] = useState(false);
 
   let schoolArray = []
 
@@ -43,16 +44,10 @@ function Finances(props) {
 
   useEffect(() => {
     let s = schools ? schools.filter(school => school.name === selectedSchool) : ''
-    console.log(s)
     let s_values = schoolCourses ? Object.values(schoolCourses)[0] : console.log('undef')
-    
     setOneCourse(s_values);
-  
-    //console.log(s_courses)
-    // setSelectedCourses(school)
+    setHasSchoolBeenSelected(true);
   }, [selectedSchool])
-
-  console.log(schoolCourses)
 
   const handleChange = e => setSelectedSchool(e.target.value);
 
@@ -87,6 +82,7 @@ function Finances(props) {
       />
       <div className="finances">
         <form method="POST">
+          <h4>SELECT YOUR SCHOOL</h4>
           {
             schools ? <select value={selectedSchool} onChange={handleChange}>
               {
@@ -97,7 +93,13 @@ function Finances(props) {
             </select> : ""
           }
           {
-            oneCourse ? <select onChange={handleCourseChange}>
+            hasSchoolBeenSelected ? <h4>SELECT YOUR COURSE</h4> : ''
+          }
+          {
+            hasSchoolBeenSelected ? <h5>Press ctrl to select multiple options</h5> : ''
+          }
+          {
+            oneCourse ? <select onChange={handleCourseChange} multiple>
               {
                 oneCourse
                   .filter(mod => mod.qualification.name === 'Honours Degree')
