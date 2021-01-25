@@ -10,7 +10,7 @@ function LandingPage(props) {
 
   const headHome = () => history.push('/dashboard/home');
 
-  const headToFinance = () => history.push('/dashboard/finances');
+  const headToFinance = () => history.push('/dashboard/postgraduate');
 
   const headToRes = () => history.push('/');
 

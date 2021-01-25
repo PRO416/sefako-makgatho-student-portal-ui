@@ -13,7 +13,7 @@ function Finances(props) {
   let [schools, setSchools] = useState([]);
   let [schoolCourses, setSchoolCourses] = useState([]);
   let [selectedSchool, setSelectedSchool] = useState('Health Care Sciences');
-  let [selectedCourses, setSelectedCourses] = useState([]);
+  let [postgraduateCourse, setPostgraduateCourse] = useState([]);
   let [selectedCourse, setSelectedCourse] = useState('');
   let [oneCourse, setOneCourse] = useState([]);
   let [hasSchoolBeenSelected, setHasSchoolBeenSelected] = useState(false);
@@ -49,6 +49,26 @@ function Finances(props) {
     setHasSchoolBeenSelected(true);
   }, [selectedSchool])
 
+  useEffect(() => {
+    let cour = oneCourse.filter(c => c.name === selectedCourse && c.qualification.name === 'Honours Degree');
+    setPostgraduateCourse(cour);
+  }, [selectedCourse])
+  
+  useEffect(() => {
+    if (Object.entries(postgraduateCourse).length === 0)
+      console.log('empty')
+    else
+      sendPostgraduateApplication(studentData.id, Object.values(postgraduateCourse)[0].id)
+        .then(res => console.log('status', res))
+        .catch(e => console.log('error', e))
+    // if (postgraduateCourse !== undefined)
+    //   sendPostgraduateApplication(studentData.id, Object.values(postgraduateCourse)[0].id)
+    //     .then(res => console.log('status', res.status))
+    // else {
+    //   console.log('post not posted')
+    // }
+  }, [submitted])
+
   const handleChange = e => setSelectedSchool(e.target.value);
 
   const handleCourseChange = e => setSelectedCourse(e.target.value);
@@ -71,6 +91,8 @@ function Finances(props) {
     redirect();
   }
 
+  // console.log(postgraduateCourse);
+
   return (
     <div >
       <Navbar
@@ -82,9 +104,30 @@ function Finances(props) {
       />
       <div className="finances">
         <form method="POST">
+          <div className="form-group">
+            <label htmlFor="firstname">FIRSTNAME</label>
+            <input type="text" className="form-control" name="firstname" value={studentData.user.firstname}disabled></input>
+          </div>
+          <div className="form-group">
+            <label htmlFor="lastname">LASTNAME</label>
+            <input type="text" className="form-control" name="lastname" value={studentData.user.lastname} disabled></input>
+          </div>
+          <div className="form-group">
+            <label htmlFor="idnumber">ID NUMBER</label>
+            <input type="text" className="form-control" name="idNumber" value="990101082756" disabled></input>
+          </div>
+          <div className="form-group">
+            <label htmlFor="email">EMAIL</label>
+            <input type="email" className="form-control" name="email" value={studentData.user.email} disabled></input>
+          </div>
+          <div className="form-group">
+            <label htmlFor="stdNum">STUDENT NUMBER</label>
+            <input type="text" className="form-control" name="studentNum" value={studentData.studentNum} disabled></input>
+          </div>
+
           <h4>SELECT YOUR SCHOOL</h4>
           {
-            schools ? <select value={selectedSchool} onChange={handleChange}>
+            schools ? <select className="form-control" value={selectedSchool} onChange={handleChange}>
               {
                 schools.map(school => (
                   <option key={school.id} value={school.name}>{school.name}</option>
@@ -99,7 +142,7 @@ function Finances(props) {
             hasSchoolBeenSelected ? <h5>Press ctrl to select multiple options</h5> : ''
           }
           {
-            oneCourse ? <select onChange={handleCourseChange} multiple>
+            oneCourse ? <select className="form-control" onChange={handleCourseChange}>
               {
                 oneCourse
                   .filter(mod => mod.qualification.name === 'Honours Degree')

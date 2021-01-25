@@ -21,7 +21,7 @@ function App() {
           <Route path="/dashboard/home">
             <LandingPage studentData={data}/>
           </Route>
-          <Route path="/dashboard/finances">
+          <Route path="/dashboard/postgraduate">
             <Finances studentData={data}/>
           </Route>
           <Route path="/dashboard/residence">

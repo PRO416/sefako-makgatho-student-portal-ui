@@ -24,7 +24,10 @@ export const getStudentCourse = (id) => {
 export const sendPostgraduateApplication = (studentId, courseId) => {
   return axios({
     method: 'post',
-    url: `${SMU_REST_API}/students/courses/postgraduate`,
+    url: `${SMU_REST_API}/students/courses/postgraduate/`,
+    // headers: {
+    //   "Access-Control-Allow-Origin": "*"
+    // },
     data: {
       student_id: studentId,
       course_id: courseId
