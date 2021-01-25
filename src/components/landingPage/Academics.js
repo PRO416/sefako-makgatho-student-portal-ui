@@ -10,6 +10,7 @@ function Academics(props) {
   const history = useHistory();
   const [course, setCourse] = useState([]);
   let [modules, setModules] = useState([]);
+  let [postModules, setPostModules] = useState([]);
   let [ed, setEd] = useState(false);
   let [pr, setPr] = useState(false);
   let [er, setEr] = useState(false);
@@ -24,9 +25,21 @@ function Academics(props) {
   }, []);
 
   useEffect(() => {
-    course[0] ? getStudentModules(studentData.id, course[0].id)
+    let undergrad = course.filter(c => c.course.postGraduateCourse == false)
+    if (Object.entries(undergrad).length !== 0)
+      getStudentModules(studentData.id, undergrad[0].id)
+        .then(res => res.data)
+        .then(data => setModules(data))
+    else
+      console.log('dne')
+
+    let postgrad = course.filter(c => c.course.postGraduateCourse == true)
+    if (Object.entries(postgrad).length !== 0)
+      getStudentModules(studentData.id, postgrad[0].id)
       .then(res => res.data)
-      .then(data => setModules(data)) : 'dne'
+      .then(data => setPostModules(data))
+    else
+      console.log('dne post')
   }, [course])
 
   const headHome = () => history.push('/dashboard/home');
@@ -48,8 +61,7 @@ function Academics(props) {
       />
       <div className="academics">
         {
-          course ? course.map(c => (
-            <div key={c.id} className="academic-details">
+            <div className="academic-details">
               <div className="enrolment">
                 <button onClick={() => setEd(!ed)}>
                   <h3>
@@ -64,7 +76,9 @@ function Academics(props) {
                   <div className="enrolment-details">
                     {
                       course ?
-                      course.map(c => (
+                      course
+                        .filter(c => c.approved)
+                        .map(c => (
                         <table key={c.id}>
                           <tbody>
                             <tr>
@@ -100,6 +114,7 @@ function Academics(props) {
                               </thead>
                             {
                               modules ? modules
+                                .sort((a, b) => a.module.academicPeriod - b.module.academicPeriod)
                                 .filter(m => m.module.year === course[0].currentLevel)
                                 .map(mod => (
                                   <tbody key={mod.id}>
@@ -152,6 +167,7 @@ function Academics(props) {
                       </thead>
                     {
                       modules ? modules
+                        .sort((a, b) => a.module.academicPeriod - b.module.academicPeriod)
                         .filter(m => course[0].currentLevel === m.module.year)
                         .map(mod => (
                           <tbody key={mod.id}>
@@ -178,6 +194,7 @@ function Academics(props) {
                      </thead>
                     {
                       modules ? modules
+                        .sort((a, b) => a.module.academicPeriod - b.module.academicPeriod)
                         .filter(m => (course[0].currentLevel > 0 && course[0].currentLevel - 1 === m.module.year))
                         .map(mod => (
                           <tbody key={mod.id}>
@@ -205,6 +222,7 @@ function Academics(props) {
                      </thead>
                     {
                       modules ? modules
+                        .sort((a, b) => a.module.academicPeriod - b.module.academicPeriod)
                         .filter(m => (course[0].currentLevel > 0 && course[0].currentLevel - 2 === m.module.year))
                         .map(mod => (
                           <tbody key={mod.id}>
@@ -234,7 +252,16 @@ function Academics(props) {
                   <div className="enrolment-details">
                     <h3>STUDENT NUMBER {studentData.studentNum}</h3><br/>
                     <h3>RESULTS FOR: {`${studentData.user.firstname} ${studentData.user.lastname}`}</h3><br/>
-                    <h3>QUALIFICATION: BSc (Mathematical Sciences) III</h3><br/>
+                    {
+                      course ?
+                        course
+                          .filter(c => c.approved)
+                          .map(c => ( 
+                            <h3>QUALIFICATION: BSc ({`${c.course.name}`}) {`${c.currentLevel}`}</h3>
+                          ))
+                        : ''
+                    } 
+                    <br/>
                     <table className="table">
                      <thead className="thead-dark">
                         <tr>
@@ -276,25 +303,33 @@ function Academics(props) {
                     {
                       course ?
                         course.map(c => (
-                          <table key={c.id}>
-                            <tbody>
-                              <tr>
-                                <td>APPROVAL</td>
-                                <td>{c.approved ? 'APPROVED' : 'NOT APPROVED'}</td>
-                              </tr>
-                              <tr>
-                                <td>COMPLETED</td>
-                                <td>{c.completed ? 'COMPLETED' : 'NOT COMPLETED'}</td>
-                              </tr>
-                            </tbody>
-                          </table>
+                          <div key={c.id}>
+                            <table className="table">
+                              <thead className="thead-dark">
+                                <tr>
+                                  <th>CODE</th>
+                                  <th>NAME</th>
+                                  <th>STATUS</th>
+                                  <th>COMPLETED</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>{c.course.code}</td>
+                                  <td>{c.course.name}</td>
+                                  <td>{c.approved ? 'APPROVED' : 'PENDING'}</td>
+                                  <td>{c.completed ? 'COMPLETED' : 'NOT COMPLETED'}</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <hr /><br />
+                          </div>
                         )) : ''
                     }
                   </div> : ''
                 }
               </div>
             </div>
-          )) : <div>Loading . . .</div>
         }
       </div>
       <Footer />

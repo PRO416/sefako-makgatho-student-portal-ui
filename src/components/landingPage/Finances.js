@@ -17,6 +17,9 @@ function Finances(props) {
   let [selectedCourse, setSelectedCourse] = useState('');
   let [oneCourse, setOneCourse] = useState([]);
   let [hasSchoolBeenSelected, setHasSchoolBeenSelected] = useState(false);
+  let [sentRequest, setSentRequest] = useState(false);
+  let [errorData, setErrorData] = useState('');
+  let [errorCode, setErrorCode] = useState(0);
 
   let schoolArray = []
 
@@ -55,19 +58,25 @@ function Finances(props) {
   }, [selectedCourse])
   
   useEffect(() => {
-    if (Object.entries(postgraduateCourse).length === 0)
-      console.log('empty')
-    else
+    if (Object.entries(postgraduateCourse).length !== 0)
       sendPostgraduateApplication(studentData.id, Object.values(postgraduateCourse)[0].id)
-        .then(res => console.log('status', res))
-        .catch(e => console.log('error', e))
-    // if (postgraduateCourse !== undefined)
-    //   sendPostgraduateApplication(studentData.id, Object.values(postgraduateCourse)[0].id)
-    //     .then(res => console.log('status', res.status))
-    // else {
-    //   console.log('post not posted')
-    // }
+        .then(res => {
+          setErrorCode(res.status);
+          setErrorData(res.data);
+          setSentRequest(true);
+        })
+        .catch(e => {
+          if(e.response) {
+            setErrorData(e.response.data);
+            setErrorCode(e.response.status);
+          }
+        })
   }, [submitted])
+
+  useEffect(() => {
+    if(sentRequest === true)
+      redirect();
+  }, [sentRequest])
 
   const handleChange = e => setSelectedSchool(e.target.value);
 
@@ -81,17 +90,21 @@ function Finances(props) {
 
   const headToSchool = () => history.push('/dashboard/academics');
 
-  const redirect = () => submitted ? headHome() : 'Warning';
+  const redirect = () => {
+    submitted ? 
+      setTimeout(() => {
+        headHome();
+      }, 5000) : 'Warning';
+  }
 
   const submitPostGrad = e => {
     e.preventDefault();
-
     setSubmitted(true);
-
-    redirect();
   }
 
-  // console.log(postgraduateCourse);
+  const errorStyling = {
+    margin: '3vh 0'
+  }
 
   return (
     <div >
@@ -103,7 +116,23 @@ function Finances(props) {
         headToSchool={headToSchool}
       />
       <div className="finances">
-        <form method="POST">
+        {
+          errorCode === 0 ? '' :
+          errorCode === 403 ? 
+          <div style={errorStyling}>
+            <h3>{errorData}</h3>
+          </div> : ''
+        }
+        {
+          sentRequest === true ?
+          <div className={{
+            margin: '2vh 0',
+            textTransform: 'uppercase'
+          }}>
+            <h3>Application submitted. Your application will be reviewed</h3>
+          </div> : ''
+        }
+        <form method="POST" style={{marginBottom: '4vh'}}>
           <div className="form-group">
             <label htmlFor="firstname">FIRSTNAME</label>
             <input type="text" className="form-control" name="firstname" value={studentData.user.firstname}disabled></input>
@@ -137,9 +166,6 @@ function Finances(props) {
           }
           {
             hasSchoolBeenSelected ? <h4>SELECT YOUR COURSE</h4> : ''
-          }
-          {
-            hasSchoolBeenSelected ? <h5>Press ctrl to select multiple options</h5> : ''
           }
           {
             oneCourse ? <select className="form-control" onChange={handleCourseChange}>
