@@ -1,6 +1,9 @@
 /* eslint-disable no-unused-expressions */
 
 import React, { useEffect, useState } from 'react';
+import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
+import PDFAcademicTranscript from './PDFAcademicTranscript';
+
 import Navbar from './Navbar';
 import Footer from './Footer';
 import { useHistory } from 'react-router-dom';
@@ -49,6 +52,14 @@ function Academics(props) {
   const headToRes = () => history.push('/');
 
   const headToSchool = () => history.push('/dashboard/academics');
+
+  // const downloadPDF = () => ReactPDF.render(<PDFAcademicTranscript />, `${__dirname}/example.pdf`);
+
+  // const downloadPDF = () => <PDFDownloadLink document={<PDFAcademicTranscript />} fileName="somename.pdf">
+  // {({ blob, url, loading, error }) => (loading ? 'Loading document...' : 'Download now!')}
+  // </PDFDownloadLink>
+
+  const downloadPDF = () => 'hello'
 
   return (
     <div>
@@ -152,7 +163,17 @@ function Academics(props) {
                       <h3>STUDENT NAME {`${studentData.user.firstname} ${studentData.user.lastname}`}</h3>
                       <br/>
                     </div>
-                    
+                    {/* {
+                      Object.entries(course).length !== 0 && Object.entries(modules).length !== 0 ?
+                        <PDFViewer>
+                          <PDFAcademicTranscript
+                            studentData={studentData}
+                            modules={modules}
+                            course={course}
+                          />
+                        </PDFViewer>
+                      : ''
+                    } */}
                     <hr/>
                     <h3>YEAR: 2021</h3>
 
@@ -235,6 +256,31 @@ function Academics(props) {
                         </tbody>)) : ''
                     }
                     </table>
+                    <hr />
+                    {
+                      Object.entries(course).length !== 0 && Object.entries(modules).length !== 0 ?
+                        <PDFDownloadLink
+                          style={{
+                            backgroundColor: '#007bff',
+                            padding: '8px 14px',
+                            margin: '15px 8px',
+                            textDecoration: 'none',
+                            textTransform: 'uppercase',
+                            borderRadius: '4px',
+                            color: '#fff',
+                          }}
+                          document={
+                            <PDFAcademicTranscript
+                              studentData={studentData}
+                              modules={modules}
+                              course={course}
+                            />
+                          }
+                          fileName="academic_record.pdf">
+                          {({ blob, url, loading, error }) => (loading ? 'Loading document...' : 'Download document')}
+                        </PDFDownloadLink>
+                      : ''
+                    }
                   </div> : ''
                 }
               </div>
